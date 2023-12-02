@@ -1,0 +1,87 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+}
+
+:root{
+    --main:#F4B400;
+    --secondry:#F2DA8D;
+    --text:#050100;
+    --secondry-text:#fff;
+  }
+
+#Home_main{
+    display: flex;
+    flex-direction: row;
+    width:100%;
+    height : calc(100vh - 72px);
+}
+
+#Home_main #right{
+    display: flex;
+    align-items: center;
+    width:40%;
+    height:100%;
+}
+
+#Home_main #left{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width:60%;
+    height:100%;
+    padding: 4rem;
+}
+
+#Home_main #left h1{
+    font-size: 2.8rem;
+    font-weight: bold;
+    color:var(--text);
+}
+
+#Home_main #left h1 span{
+    color:var(--main);
+}
+
+#Home_main #left h2{
+    font-size: 2.2rem;
+    font-weight: bold;
+    color:var(--text);
+}
+
+#Home_main #left p{
+    padding-top: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--text);
+    text-align: justify;
+    padding-bottom: 1rem;
+}
+
+#Home_main #left button{
+    display:block;
+    width:12rem;
+    height:3.5rem;
+    border-collapse: collapse;
+    border:2px solid transparent;
+    border-radius: 5px;
+    background-color: var(--main);
+    color: var(--text);
+    font-size: 1.2rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 2s ease-in-out linear;
+}
+
+#Home_main #left button:hover{
+    border:2px solid var(--main);
+    background-color: transparent;
+}
+
+
+#Home_main #right .img{
+    width:80%;
+    height:50%;
+}
