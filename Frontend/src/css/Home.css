@@ -75,6 +75,11 @@
     transition: 2s ease-in-out linear;
 }
 
+#Home_main #left a{
+    text-decoration: none;
+    color: var(--text);
+}
+
 #Home_main #left button:hover{
     border:2px solid var(--main);
     background-color: transparent;

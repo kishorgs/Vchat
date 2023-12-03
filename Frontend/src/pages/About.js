@@ -1,8 +1,17 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import svg from '../images/about us.svg'
 import '../css/About.css'
 
-function About() {
+function About({setProgress}) {
+
+    useEffect(()=>{
+      setProgress(10)
+      setTimeout(()=>{
+      setProgress(100)
+    },500)
+      
+        },[setProgress])
+
   return (
     <div id='About_main'>
         <div id="left">
@@ -15,7 +24,7 @@ function About() {
             </p>
         </div>
         <div id="right">
-            <img className="img" src={svg}/>
+            <img className="img" alt='about-Svg' src={svg}/>
         </div>
       
     </div>

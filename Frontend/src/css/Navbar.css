@@ -21,6 +21,11 @@
     background-color:var(--text);
 }
 
+.navbar-header i{
+    display: block;
+    color: var(--secondry-text);
+}
+
 .navlinks{
     display: flex;
     gap: 2rem;
@@ -45,7 +50,7 @@
     text-decoration: none;
     color: var(--secondry-text);
     font-size: 1.8rem;
-    font-weight: 600;
+    font-weight: 800;
     margin: 1rem;
 }
 
@@ -75,7 +80,20 @@
     transition: 1s ease linear;
 }
 
+
+#btns #create-btn a,
+#btns #Join-btn a{
+    text-decoration: none;
+    color:var(--text);
+}
+
 #btns #create-btn:hover,
 #btns #Join-btn:hover{
     opacity: 0.9;
+}
+
+
+
+@media screen and (max-width:786px){
+
 }

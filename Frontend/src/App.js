@@ -7,6 +7,8 @@ import About from "./pages/About"
 import Navbar from './components/Navbar';
 import {BrowserRouter, Route,Routes} from 'react-router-dom'
 import LoadingBar from 'react-top-loading-bar'
+import CreateMeeting from './pages/CreateMeeting';
+import JoinMeeting from './pages/JoinMeeting';
 
 function App() {
   const [progress, setProgress] = useState(0)
@@ -14,7 +16,7 @@ function App() {
     <>
     <BrowserRouter>
       <LoadingBar
-        color='#e60000'
+        color='#F4B400'
         progress={progress}
         onLoaderFinished={() => setProgress(0)}
       />
@@ -23,6 +25,9 @@ function App() {
         <Route index element={<Home setProgress={setProgress}/>}/>
         <Route path='/about' element={<About setProgress={setProgress}/>}/>
         <Route path='/contact' element={<Contact setProgress={setProgress}/>}/>
+        
+        <Route path='/Create-Room' element={<CreateMeeting setProgress={setProgress}/>}/>
+        <Route path='/Join-Room' element={<JoinMeeting setProgress={setProgress}/>}/>
       </Route>
     </Routes>
     

@@ -43,11 +43,11 @@
 
 #Contact_main #left h1{
     font-size: 2.5rem;
-    font-weight: 600;
+    font-weight: 700;
     padding-bottom: 2rem;
 }
 
-#Contact_main #left #form{
+#Contact_main #left #form-contact{
     display: flex;
     flex-direction: column;
     border:1px solid var(--text);
@@ -55,21 +55,22 @@
     border-radius: 5px;
 }
 
-#Contact_main #left #form label{
+#Contact_main #left #form-contact label{
     font-size: 1.5rem;
     font-weight: 400;
     padding-bottom: 1rem;
     padding-top:0.5rem;
 }
 
-#Contact_main #left #form input,
-#Contact_main #left #form textarea{
+#Contact_main #left #form-contact input,
+#Contact_main #left #form-contact textarea{
     width:100%;
     padding:0.8rem;
     font-size: 1.2rem;
+    resize: none;
 }
 
-#Contact_main #left #form button{
+#Contact_main #left #form-contact button{
     margin-top:1.5rem;
     width:100%;
     height:3rem;
@@ -83,6 +84,6 @@
 
 
 
-#Contact_main #left #form button:hover{
+#Contact_main #left #form-contact button:hover{
     opacity: 0.9;
 }

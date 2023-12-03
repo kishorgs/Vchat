@@ -1,8 +1,18 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import '../css/Home.css'
 import svg from '../images/meeting.svg'
 
-function Home() {
+function Home({setProgress}) {
+
+    useEffect(()=>{
+      setProgress(10)
+      setTimeout(()=>{
+      setProgress(100)
+    },500)
+      
+        },[setProgress])
+
+
   return (
     <div id="Home_main">
 
@@ -18,10 +28,11 @@ function Home() {
         Vchat is designed for seamless communication, making it easy to connect and chat in real time. 
         Join the conversation today and experience the freedom of spontaneous, hassle-free chatting
         </p>
-        <button>Get Started</button>
+        <a href='/Create-Room'><button>Get Started</button></a>
+        
       </div>
       <div id="right">
-            <img className="img" src={svg}/>
+            <img className="img" alt='Home-Svg' src={svg}/>
       </div>
 
        

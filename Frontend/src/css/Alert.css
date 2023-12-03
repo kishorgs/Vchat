@@ -1,0 +1,50 @@
+.alert {
+    position: absolute;
+    top: 70px;
+    left: 0px;
+    width: 100%;
+    /* right: 0px; */
+    padding: 10px 0;
+    border: 0.5px solid;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .alert p{
+    margin: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  .alert-success {
+    background-color: #0F9D58;
+    color: black;
+    font-weight: 500;
+  }
+
+  .alert-info {
+    background-color: #24a0ed;
+    color: black;
+  }
+  
+  .alert-error {
+    background-color: #DB4437;
+    color: black;
+    font-weight: 500;
+  }
+  
+  .close-button {
+    border: none;
+    background: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: inherit;
+    padding-right:1rem;
+  }
+
+/*
+  background-color: #e07b73;
+  
+    background-color: #a9f1ab;
+  */
