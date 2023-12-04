@@ -28,6 +28,7 @@
 #Contact_main #right img{
     width:80%;
     height:50%;
+    z-index: -1;
 }
 
 #Contact_main #left{
@@ -38,6 +39,7 @@
     width:60%;
     height:100%;
     padding: 4rem;
+    z-index: -1;
 }
 
 
@@ -86,4 +88,64 @@
 
 #Contact_main #left #form-contact button:hover{
     opacity: 0.9;
+}
+
+
+@media screen and (max-width:1024px){
+    #Contact_main{
+        flex-direction: column-reverse;
+        overflow-y: scroll;
+    }
+
+    #Contact_main #right{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width:100%;
+        height:100%;
+        padding-bottom: 0;
+    }
+
+    #Contact_main #left{
+        width:100%;
+        height:100%;
+        transform: translateY(-12rem);
+    }
+
+    #Contact_main #right img{
+        position: relative;
+        top: 80px;
+        transform: translateY(-12rem);
+    }
+}
+
+
+@media screen and (max-width:800px){
+
+    #Contact_main #right{
+        padding-top: 2rem;
+    }
+
+    #Contact_main #left{
+        transform: translateY(-10rem);
+    }
+
+    #Contact_main #right img{
+        transform: translateY(-10rem);
+    }
+
+}
+
+@media screen and (max-width:600px){
+    #Contact_main #right{
+        width:100%;
+    }
+
+    #Contact_main #right img{
+        width:100%;
+    }
+
+    #Contact_main #left{
+        padding:3rem 1rem;
+    }
 }

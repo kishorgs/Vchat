@@ -9,6 +9,7 @@ import {BrowserRouter, Route,Routes} from 'react-router-dom'
 import LoadingBar from 'react-top-loading-bar'
 import CreateMeeting from './pages/CreateMeeting';
 import JoinMeeting from './pages/JoinMeeting';
+import ChatRoom from './pages/ChatRoom';
 
 function App() {
   const [progress, setProgress] = useState(0)
@@ -28,6 +29,9 @@ function App() {
         
         <Route path='/Create-Room' element={<CreateMeeting setProgress={setProgress}/>}/>
         <Route path='/Join-Room' element={<JoinMeeting setProgress={setProgress}/>}/>
+
+        
+        <Route path='/chat-room' element={<ChatRoom setProgress={setProgress}/>}/>
       </Route>
     </Routes>
     

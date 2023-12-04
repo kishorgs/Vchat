@@ -64,3 +64,15 @@
 #frame button:hover{
     opacity: 0.9;
 }
+
+@media screen and (max-width:900px){
+    #Create-main #frame{
+        width:90%;       
+    }
+}
+
+@media screen and (max-width:500px){
+    html{
+        font-size: 80%;
+    }
+}

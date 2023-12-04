@@ -10,3 +10,7 @@
   --text:#111;
   --secondry-text:#fff;
 }
+
+html{
+  font-size: 90%;
+}

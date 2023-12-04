@@ -42,9 +42,11 @@ function JoinMeeting({setProgress}) {
       showAlert(formErrors.roomId, "error");
     } else if (formValues.roomId.length !== 6 && isSubmit) {
       showAlert(formErrors.roomId, "error");
-    } else {
+    } 
+
+    if (formValues.name.length >= 0 && formValues.roomName.length >= 0 && isSubmit){
       formValues.name = "";
-      formValues.roomId = "";
+      formValues.roomName = "";
     }
   };
 

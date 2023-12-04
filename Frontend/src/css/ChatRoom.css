@@ -1,0 +1,50 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+}
+
+:root{
+    --main:#F4B400;
+    --secondry:#111111;
+    --text:#050100;
+    --secondry-text:#fff;
+}
+
+.chat-screen{
+    display: flex;
+    flex-direction: row;
+    width:100%;
+    height:calc(100vh - 70px);
+}
+
+.user-screen{
+    width:60%;
+    height:calc(100vh - 70px);
+}
+
+.your-screen{
+    width:40%;
+    height:calc(100vh - 70px);
+}
+
+.end-btn{
+    display: block;
+    width:4rem;
+    height:4rem;
+    font-size: 1.8rem;
+    color: var(--secondry-text);
+    background-color: #ed2918;
+    border-color: 0;
+    border-radius: 50%;
+    border:0;
+    position: fixed;
+    bottom:2rem;
+    left:2rem;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.end-btn:hover{
+    opacity: 0.9;
+}

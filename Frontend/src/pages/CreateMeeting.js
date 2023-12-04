@@ -1,9 +1,9 @@
 import React, { useState,useEffect } from "react";
 import "../css/CreateMeeting.css";
 import Alert from "../components/Alert";
+import {useNavigate} from 'react-router-dom'
 
 function CreateMeeting({setProgress}) {
-
 
   useEffect(()=>{
     setProgress(10)
@@ -18,6 +18,8 @@ function CreateMeeting({setProgress}) {
   const [formValues, setFormValues] = useState(initialVlaues);
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
+  const [passcode, setPasscode] = useState('');
+  const navigate = useNavigate();
 
   const [alert, setAlert] = useState(null);
   const showAlert = (message, type) => {
@@ -39,11 +41,20 @@ function CreateMeeting({setProgress}) {
 
     if (formValues.name.length === 0 && isSubmit) {
       showAlert(formErrors.name, "error");
+      return;
     } else if (formValues.roomName.length === 0 && isSubmit) {
       showAlert(formErrors.roomName, "error");
-    } else {
+      return;
+    }
+    if (formValues.name.length >= 0 && formValues.roomName.length >= 0 && isSubmit){
       formValues.name = "";
       formValues.roomName = "";
+
+      const newPasscode = generateRandomPasscode();
+      setPasscode(newPasscode);
+
+      navigate("/chat-room");
+      console.log(newPasscode);
     }
   };
 
@@ -59,6 +70,26 @@ function CreateMeeting({setProgress}) {
 
     return errors;
   };
+
+  const generateRandomPasscode = () => {
+    const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let passcode = '';
+
+    passcode += Math.floor(Math.random() * 10); // First digit
+    passcode += Math.floor(Math.random() * 10); // second digit
+
+    for (let i = 0; i < 4; i++) {
+      const randomIndex = Math.floor(Math.random() * (charset.length - 10)) + 10;
+      passcode += charset[randomIndex];
+    }
+
+    // Shuffle the passcode characters
+    passcode = passcode.split('').sort(() => Math.random() - 0.5).join('');
+
+    console.log(passcode);
+    return passcode;
+  };
+
 
   return (
     <div id="Create-main">
