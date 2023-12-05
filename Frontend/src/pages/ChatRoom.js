@@ -1,55 +1,57 @@
-import React from 'react'
+import React,{useState} from 'react'
 import '../css/ChatRoom.css'
-import Webcam from "react-webcam";
-
-import {MdCallEnd} from "react-icons/md";
+import { FaUserAlt } from "react-icons/fa";
+import {MdCallEnd,MdMessage} from "react-icons/md";
+import Message from '../components/Message';
+import Users from '../components/Users';
+import MessageBox from '../components/MessageBox';
 
 function ChatRoom() {
 
-    const webcamRef = React.useRef(null);
-    const mediaRecorderRef = React.useRef(null);
-    const [capturing, setCapturing] = React.useState(false);
-    const [recordedChunks, setRecordedChunks] = React.useState([]);
-  
+    const [msgClick,setMsgClick] = useState(false);
+    const [userClick,setUserClick] = useState(false);
+
     
 
-    const handleStartCaptureClick = React.useCallback(() => {
-      setCapturing(true);
-      mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
-        mimeType: "video/mp4"
-      });
-      mediaRecorderRef.current.addEventListener(
-        "dataavailable",
-        handleDataAvailable
-      );
-      mediaRecorderRef.current.start();
-    }, [webcamRef, setCapturing, mediaRecorderRef]);
-  
-    const handleDataAvailable = React.useCallback(
-      ({ data }) => {
-        if (data.size > 0) {
-          setRecordedChunks((prev) => prev.concat(data));
-        }
-      },
-      [setRecordedChunks]
-    );
-  
+    const msgHandleClick = (e) =>{
+        setMsgClick(!msgClick);
+        setUserClick(false);
+
+    }
+
+    const userHandleClick = (e) =>{
+      setUserClick(!userClick);
+      setMsgClick(false);
+    }
+
 
   return (
     <div className='chat-screen'>
         <div className='user-screen'>
-        <Webcam audio={false} ref={webcamRef} width={920} height={700}/>
-        
+
+          <div className="btn-grp">
             <button className="end-btn">
                 <MdCallEnd/>
             </button>
+            <button onClick={userHandleClick} className="user-btn">
+                <FaUserAlt />
+            </button>
+            <button onClick={msgHandleClick} className="msg-btn">
+                <MdMessage />
+            </button>
+          </div>
+            
         </div>
-        <div className='your-screen'>
-
+        <div id='chat-box' className='chat-box'>
+           {userClick && <Users/> } 
+           {msgClick && <MessageBox type='recived-msg'/> }
+           {msgClick && <MessageBox type='sent-msg'/> }
+          <div className="chat-bottom">
+          {msgClick && <Message/> } 
+          </div>
         </div>
     </div>
   )
 }
 
 export default ChatRoom
-  

@@ -1,6 +1,8 @@
 import React, { useState,useEffect } from "react";
 import "../css/CreateMeeting.css";
 import Alert from "../components/Alert";
+import {useNavigate} from 'react-router-dom'
+import { useSocket } from "../context/SocketProvider";
 
 function JoinMeeting({setProgress}) {
 
@@ -17,6 +19,8 @@ function JoinMeeting({setProgress}) {
   const [formValues, setFormValues] = useState(initialVlaues);
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
+  const navigate = useNavigate();
+  const socket = useSocket();
 
   const [alert, setAlert] = useState(null);
   const showAlert = (message, type) => {
@@ -34,19 +38,30 @@ function JoinMeeting({setProgress}) {
   const handleSubmit = (e) => {
     e.preventDefault();
     setFormErrors(validate(formValues));
-    setIsSubmit(true);
 
-    if (formValues.name.length === 0 && isSubmit) {
+    if (formValues.name.length === 0) {
       showAlert(formErrors.name, "error");
-    } else if (formValues.roomId.length === 0 && isSubmit) {
+    } else if (formValues.roomId.length === 0) {
       showAlert(formErrors.roomId, "error");
-    } else if (formValues.roomId.length !== 6 && isSubmit) {
+    } else if (formValues.roomId.length !== 6) {
       showAlert(formErrors.roomId, "error");
-    } 
+    }
 
-    if (formValues.name.length >= 0 && formValues.roomName.length >= 0 && isSubmit){
+    if (formValues.name.length >= 0 && formValues.roomId.length >= 0){
+
+      let name = formValues.name;
+      let roomid = formValues.roomId;
+
+      socket.emit("room:join",{name,roomid});
+
       formValues.name = "";
-      formValues.roomName = "";
+      formValues.roomId = "";
+
+
+
+      navigate(`/chat-room/${roomid}`);
+      
+      setProgress(100)
     }
   };
 

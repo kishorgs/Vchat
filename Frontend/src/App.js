@@ -29,9 +29,7 @@ function App() {
         
         <Route path='/Create-Room' element={<CreateMeeting setProgress={setProgress}/>}/>
         <Route path='/Join-Room' element={<JoinMeeting setProgress={setProgress}/>}/>
-
-        
-        <Route path='/chat-room' element={<ChatRoom setProgress={setProgress}/>}/>
+        <Route path='/chat-room/:passcode' element={<ChatRoom setProgress={setProgress}/>}/>
       </Route>
     </Routes>
     

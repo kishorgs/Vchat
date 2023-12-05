@@ -2,6 +2,7 @@ import React, { useState,useEffect } from "react";
 import "../css/CreateMeeting.css";
 import Alert from "../components/Alert";
 import {useNavigate} from 'react-router-dom'
+import { useSocket } from "../context/SocketProvider";
 
 function CreateMeeting({setProgress}) {
 
@@ -17,8 +18,6 @@ function CreateMeeting({setProgress}) {
 
   const [formValues, setFormValues] = useState(initialVlaues);
   const [formErrors, setFormErrors] = useState({});
-  const [isSubmit, setIsSubmit] = useState(false);
-  const [passcode, setPasscode] = useState('');
   const navigate = useNavigate();
 
   const [alert, setAlert] = useState(null);
@@ -34,31 +33,35 @@ function CreateMeeting({setProgress}) {
     setFormValues({ ...formValues, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    setFormErrors(validate(formValues));
-    setIsSubmit(true);
-
-    if (formValues.name.length === 0 && isSubmit) {
+    setFormErrors( validate(formValues));
+  
+    if (formValues.name.length === 0) {
       showAlert(formErrors.name, "error");
       return;
-    } else if (formValues.roomName.length === 0 && isSubmit) {
+    } else if (formValues.roomName.length === 0  ) {
       showAlert(formErrors.roomName, "error");
       return;
     }
-    if (formValues.name.length >= 0 && formValues.roomName.length >= 0 && isSubmit){
+    if (formValues.name.length >= 0 && formValues.roomName.length >= 0 ){
+      setProgress(0)
+   
+      const Passcode = await generateRandomPasscode();
+
+      let name = formValues.name;
+      let roomname = formValues.roomName;
       formValues.name = "";
       formValues.roomName = "";
+      socket.emit("room:create", { name , roomname , Passcode})
 
-      const newPasscode = generateRandomPasscode();
-      setPasscode(newPasscode);
-
-      navigate("/chat-room");
-      console.log(newPasscode);
+      navigate(`/chat-room/${Passcode}`);
+      
+      setProgress(100)
     }
   };
 
-  const validate = (values) => {
+  const validate = async(values) => {
     const errors = {};
 
     if (!values.name) {
@@ -71,7 +74,7 @@ function CreateMeeting({setProgress}) {
     return errors;
   };
 
-  const generateRandomPasscode = () => {
+  const generateRandomPasscode = async() => {
     const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let passcode = '';
 
@@ -91,9 +94,14 @@ function CreateMeeting({setProgress}) {
   };
 
 
+  const socket = useSocket()
+
+  console.log(socket);
+
+
   return (
     <div id="Create-main">
-      <form id="frame" onSubmit={handleSubmit}>
+      <form id="frame" >
         <h1>Create Video Chat Room</h1>
         <label htmlFor="name">Name :</label>
         <input
@@ -115,7 +123,7 @@ function CreateMeeting({setProgress}) {
           onChange={handleChange}
           autoComplete="off"
         />
-        <button type="submit">Create Room</button>
+        <button onClick={handleSubmit} type="submit">Create Room</button>
       </form>
 
       {alert && (
