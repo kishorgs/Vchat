@@ -19,4 +19,8 @@ io.on("connection", (socket) => {
             console.log("Room doesn't exist");
         }
     })
+    socket.on("sendMessage",data => {
+        console.log(data)
+        socket.to(data.roomId).emit("reciveMessage",{message:data.message,name:data.username})
+    })
 });

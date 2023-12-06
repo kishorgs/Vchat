@@ -28,6 +28,7 @@
     width:30%;
     height:calc(100vh - 70px);
     border:1px solid blue;
+    overflow: auto;
 }
 
 .btn-grp{
@@ -80,4 +81,8 @@ button:hover{
     width:30%;
     height:8rem;
     border:2px solid green;
+}
+
+button.active{
+    background-color: #ed2918;
 }

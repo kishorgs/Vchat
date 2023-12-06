@@ -1,8 +1,9 @@
-import React, { useState,useEffect } from "react";
+import React, { useState,useEffect, useContext } from "react";
 import "../css/CreateMeeting.css";
 import Alert from "../components/Alert";
 import {useNavigate} from 'react-router-dom'
 import { useSocket } from "../context/SocketProvider";
+import chatContext from "../context/context";
 
 function JoinMeeting({setProgress}) {
 
@@ -18,9 +19,9 @@ function JoinMeeting({setProgress}) {
 
   const [formValues, setFormValues] = useState(initialVlaues);
   const [formErrors, setFormErrors] = useState({});
-  const [isSubmit, setIsSubmit] = useState(false);
   const navigate = useNavigate();
   const socket = useSocket();
+  const context = useContext(chatContext);
 
   const [alert, setAlert] = useState(null);
   const showAlert = (message, type) => {
@@ -53,6 +54,12 @@ function JoinMeeting({setProgress}) {
       let roomid = formValues.roomId;
 
       socket.emit("room:join",{name,roomid});
+
+      const {setUsername} = context;
+      setUsername(name);
+
+      const {setRoomId} = context;
+      setRoomId(roomid);
 
       formValues.name = "";
       formValues.roomId = "";
