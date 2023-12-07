@@ -31,16 +31,34 @@
     overflow: auto;
 }
 
+.video-footer{
+    display: flex;
+    flex-direction: row;
+    position: fixed;
+    width:70%;
+    bottom:0;
+    left:0;
+    height:8rem;
+    border: 1px solid red;
+}
+
+.details{
+    position: relative;
+    top:0;
+    left:0;
+    padding:2rem;
+}
+
 .btn-grp{
     display: flex;
     align-items: center;
     padding:0 2rem;
-    position: fixed;
-    bottom:0;
-    left:0;
     width:70%;
+    position: fixed;
+    right: 0;
+    bottom:0;
     height:8rem;
-    border:2px solid red;
+    text-align: right;
 }
 
 button{
@@ -85,4 +103,35 @@ button:hover{
 
 button.active{
     background-color: #ed2918;
+}
+
+.chat-body{
+    position: fixed;
+    top:64px;
+    right:0;
+    height:calc(100vh - 64px - 8rem);
+    width:30%;
+    border:1px solid black;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    scrollbar-base-color: transparent;
+    scrollbar-arrow-color: transparent;
+
+}
+
+.video-screen span{
+    position:relative;
+    top:10px;
+    left:10px;
+}
+
+.video-player{
+    width: 500px;
+    height: 300px;
+    background-color: black;
+}
+
+.username{
+    color: white;
+    font-size: 20px;
 }

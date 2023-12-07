@@ -20,11 +20,11 @@
 }
 
 .recived-msg{
-    background-color: aliceblue;
+    background-color: #f8ed62;
 }
 
 .sent-msg{
-    background-color: rgb(91, 247, 164);
+    background-color: #fff9ae;
 }
 
 .message-box .name{
