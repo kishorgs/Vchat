@@ -1,10 +1,10 @@
 import React from 'react'
 
-const VideoPlayer = ({username}) => {
+const VideoPlayer = ({username,user_id}) => {
   return (
     <div className="video-player">
         <span className='username'>{username}</span>
-        <video className='video-player' autoPlay playsInline></video>
+        <video id={user_id} className='video-player' autoPlay playsInline></video>
     </div>
   )
 }

@@ -1,61 +1,239 @@
-import React,{useState,useEffect, useContext} from 'react'
-import '../css/ChatRoom.css'
-import { FaUserAlt,FaMicrophone,FaVideo,FaVideoSlash } from "react-icons/fa";
-import {MdCallEnd,MdMessage} from "react-icons/md";
-import { FaMicrophoneSlash } from "react-icons/fa6";
+import React, { useState, useEffect, useContext } from 'react';
+import '../css/ChatRoom.css';
+import {
+  FaUserAlt,
+  FaMicrophone,
+  FaVideo,
+  FaVideoSlash,
+} from 'react-icons/fa';
+import { MdCallEnd, MdMessage } from 'react-icons/md';
+import { FaMicrophoneSlash } from 'react-icons/fa6';
 import Message from '../components/Message';
 import Users from '../components/Users';
 import MessageBox from '../components/MessageBox';
 import { useSocket } from '../context/SocketProvider';
 import chatContext from '../context/context';
-import Webcam from "react-webcam";
 import VideoPlayer from '../components/VideoPlayer';
 
 function ChatRoom() {
+  let roomname;
 
   const Socket = useSocket();
 
   const context = useContext(chatContext);
-  const {setRecivedMessage,recivedMessage,roomId} = context
+  const { setRecivedMessage, recivedMessage, roomId } = context;
 
-  const[user,setNewuser]=useState([{username:'',stream:''}])
-  const[otheruser,setotheruser]=useState([{username:'',stream:''}])
-
+  const [user, setUsers] = useState([{ username: '', stream: '' }]);
 
   useEffect(() => {
     const handleReceiveMessage = (data) => {
-      console.log("data", data);
+      console.log('data', data);
       setRecivedMessage((prevMessages) => [
         ...prevMessages,
-        { username: data.name, message: data.message, type: "recived-msg" },
+        {
+          username: data.name,
+          message: data.message,
+          type: 'recived-msg',
+        },
       ]);
     };
+
+    const handleNewUser = (data) => {
+      console.log('New User Joined', data);
+      setUsers((prevUsers) => [
+        ...prevUsers,
+        { username: data.username, stream: data.stream },
+      ]);
+    };
+
+    const handleOtherUsers = (data) => {
+      setUsers(data);
+
+      data.forEach((element) => {
+        createConnection(element.socketId);
+        console.log(element.socketId);
+      });
+    };
+
+    Socket.on('reciveMessage', handleReceiveMessage);
+    Socket.on('newuser', handleNewUser);
+    Socket.on('otheruserslist', handleOtherUsers);
+
+    return () => {
+      Socket.off('reciveMessage', handleReceiveMessage);
+      Socket.off('newuser', handleNewUser);
+      Socket.off('otheruserslist', handleOtherUsers);
+    };
+  }, [Socket, setRecivedMessage]);
+
+  const iceConfiguration = {
+    iceServers: [
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' },
+      { urls: 'stun:stun2.l.google.com:19302' },
+      { urls: 'stun:stun3.l.google.com:19302' },
+      { urls: 'stun:stun4.l.google.com:19302' },
+    ],
+  };
+
+  const updateMediaSenders = (track, rtpSenders) => {
+    for (var conId in userConnection) {
+      var connection = userConnection[conId];
+      if (
+        connection &&
+        (connection.connectionState === 'new' ||
+          connection.connectionState === 'connecting' ||
+          connection.connectionState === 'connected')
+      ) {
+        if (rtpSenders[conId] && rtpSenders[conId].track) {
+          rtpSenders[conId].replaceTrack(track);
+        } else {
+          rtpSenders[conId] = userConnection[conId].addTrack(track);
+        }
+      }
+    }
+  };
+
+  const sdpExchange = (data, connectionId) => {
+    Socket.emit('sdpExchange', {
+      data: data,
+      connectionId: connectionId,
+    });
+  };
+
+  Socket.on('sdpExchange', async (data) => {
+    const message = JSON.parse(data.data);
+
+    if (message.answer) {
+      await userConnection[data.fromConnId].setRemoteDescription(
+        new RTCSessionDescription(message.answer)
+      );
+    } else if (message.offer) {
+      if (!userConnection[data.fromConnId]) {
+        await createConnection(data.fromConnId);
+      }
+
+      await userConnection[data.fromConnId].setRemoteDescription(
+        new RTCSessionDescription(message.offer)
+      );
+      var answer = await userConnection[data.fromConnId].createAnswer();
+
+      await userConnection[data.fromConnId].setLocalDescription(answer);
+      sdpExchange(
+        JSON.stringify({
+          answer: answer,
+        }),
+        data.fromConnId
+      );
+    } else if (message.iceCandidate) {
+      if (!userConnection[data.fromConnId]) {
+        await createConnection(data.fromConnId);
+      }
+      try {
+        await userConnection[data.fromConnId].addIceCandidate(
+          message.iceCandidate
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  });
+
+  const remoteStream = [];
+  const audioStream = [];
+
+  const userConnectionId = [];
+  const userConnection = [];
+
+  const rtpVideoSender = [];
+
+  const createOffer = async (connId) => {
+    const connection = userConnection[connId];
+    const offer = await connection.createOffer();
+
+    connection.setLocalDescription(offer);
+
+    sdpExchange(
+      JSON.stringify({
+        offer: connection.localDescription,
+      }),
+      connId
+    );
+  };
+
+  const createConnection = async (connectionId) => {
+    var connect = new RTCPeerConnection(iceConfiguration);
     
 
-
-    const handleNewUser =(data)=>{
-      console.log('New User Joined',data);
-      setNewuser((prevuser)=>[...prevuser,{username:data.username,stream:data.stream}])
-
-
-    }
-
-    const handleOtheruser=(data)=>{
-      console.log(data)
-    }
-
-    Socket.on("reciveMessage", handleReceiveMessage);
-    Socket.on("newuser", handleNewUser);
-    Socket.on("otheruserslist", handleOtheruser);
-    return () => {
-      Socket.off("reciveMessage", handleReceiveMessage);
-      Socket.off("newuser", handleNewUser);
-      Socket.off("otheruserslist",handleOtheruser);
+    connect.onicecandidate = (event) => {
+      if (event.candidate) {
+        sdpExchange(
+          JSON.stringify({
+            iceCandidate: event.candidate,
+          }),
+          connectionId
+        );
+      }
     };
-  }, [Socket]);
 
-  Socket.emit('otherusers',{roomId:roomId,socketId:Socket.id})
+    connect.onnegotiationneeded = async (event) => {
+      await createOffer(connectionId);
+    };
 
+    connect.ontrack = (event) => {
+      if (!remoteStream[connectionId]) {
+        remoteStream[connectionId] = new MediaStream();
+      }
+
+      if (!audioStream[connectionId]) {
+        audioStream[connectionId] = new MediaStream();
+      }
+
+      if (event.track.kind === 'video') {
+        remoteStream[connectionId].getTracks().forEach((element) => {
+          remoteStream[connectionId].removeTrack(element);
+        });
+        remoteStream[connectionId].addTrack(event.track);
+        var remotevideo = document.getElementById(connectionId);
+        remotevideo.srcObject = null;
+        remotevideo.srcObject = remoteStream[connectionId];
+        remotevideo.load();
+      }
+    };
+
+    userConnectionId[connectionId] = connectionId;
+    userConnection[connectionId] = connect;
+    updateMediaSenders(mediaStream, rtpVideoSender);
+
+    return connect;
+  };
+
+  useEffect(() => {
+    Socket.emit('otherusers', { roomId: roomId, socketId: Socket.id });
+
+    return () => {
+      Socket.off('otherusers');
+    };
+  }, [Socket, roomId]);
+
+ 
+    var mediaStream;
+    let localstream = document.getElementById('localstream');
+    const getMedia = async () => {
+      try {
+         mediaStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
+        });
+        localstream.srcObject = mediaStream;
+        updateMediaSenders(mediaStream, rtpVideoSender);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getMedia();
+  
     const [msgClick,setMsgClick] = useState(false);
     const [userClick,setUserClick] = useState(false);
     const [videoClick,setVideoClick] = useState(true);
@@ -88,11 +266,8 @@ function ChatRoom() {
     <div className='chat-screen'>
         <div className='user-screen'>
         <div className='video-screen'>
-          <VideoPlayer username='you'/>
+          <VideoPlayer username='you' user_id='localstream'/>
           {user.map((data)=>(
-            data.username!=='' && data.stream!=='' ? (<VideoPlayer username={data.username}/>):null
-          ))}
-          {otheruser.map((data)=>(
             data.username!=='' && data.stream!=='' ? (<VideoPlayer username={data.username}/>):null
           ))}
         </div>
@@ -101,8 +276,8 @@ function ChatRoom() {
 
 
               <div className='details'>
-                    <h2>Name</h2>
-                    <h2>ID</h2>
+                    <h2>Room Name : {roomname}</h2>
+                    <h2>Room Id : {roomId}</h2>
               </div>
 
               <div className="btn-grp">
@@ -134,7 +309,7 @@ function ChatRoom() {
             })}
            </div>
           <div className="chat-bottom">
-          {msgClick && <Message/> } 
+          {msgClick && <Message/> }
           </div>
         </div>
     </div>

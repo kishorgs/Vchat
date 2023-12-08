@@ -14,17 +14,20 @@
 .message-box{
     display: flex;
     flex-direction: column;
-    padding:2rem;
-    margin:2rem 2rem 2rem 0;
+    padding:1rem;
     text-align: justify;
+    border-radius: 1rem;
+    margin:1rem 0;
 }
 
 .recived-msg{
     background-color: #f8ed62;
+    margin:1rem 1rem 1rem 0;
 }
 
 .sent-msg{
     background-color: #fff9ae;
+    margin:1rem 0 1rem 1rem;
 }
 
 .message-box .name{

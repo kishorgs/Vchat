@@ -14,6 +14,7 @@ io.on("connection", (socket) => {
         users.push({
             username:data.name,
             roomId:data.Passcode,
+            roomname:data.roomname,
             socketId:socket.id
         })
     })
@@ -24,6 +25,7 @@ io.on("connection", (socket) => {
             users.push({
                 username:data.name,
                 roomId:data.roomid,
+                roomname:data.roomname,
                 socketId:socket.id
             })
             socket.join(data.roomid)
@@ -43,6 +45,14 @@ io.on("connection", (socket) => {
         const filterUsers = users.filter((user) => user.roomId === data.roomId && user.socketId!==data.socketId);
         console.log(filterUsers)
         io.to(data.socketId).emit("otheruserslist", filterUsers);
+    })
+
+    socket.on('sdpExchange',(data)=>{
+        socket.to(data.connectionId).emit('sdpExchange',{
+            data: data.data,
+            from_connid: socket.id
+
+        })
     })
     
 });
