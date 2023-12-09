@@ -32,6 +32,7 @@
 
 .message-box .name{
     text-align:left;
+    font-weight: 600;
 }
 
 .message-box .time{

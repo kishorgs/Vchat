@@ -158,3 +158,13 @@ button.active{
     display: none;
 }
 
+
+.copy-icon{
+    padding-left: 2rem;
+    cursor:pointer;
+    transition: 200ms ease;
+}
+
+.copy-icon:hover{
+    color:#ed2918;
+}

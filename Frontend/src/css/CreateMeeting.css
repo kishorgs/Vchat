@@ -18,6 +18,7 @@
     flex-direction: row;
     width:100%;
     height : calc(100vh - 72px);
+    z-index: -1;
 }
 #Create-main #frame{
     display: flex;

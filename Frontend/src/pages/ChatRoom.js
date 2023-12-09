@@ -5,6 +5,7 @@ import {
   FaMicrophone,
   FaVideo,
   FaVideoSlash,
+  FaCopy
 } from 'react-icons/fa';
 import { MdCallEnd, MdMessage } from 'react-icons/md';
 import { FaMicrophoneSlash } from 'react-icons/fa6';
@@ -14,6 +15,7 @@ import MessageBox from '../components/MessageBox';
 import { useSocket } from '../context/SocketProvider';
 import chatContext from '../context/context';
 import VideoPlayer from '../components/VideoPlayer';
+import Alert from '../components/Alert';
 
 function ChatRoom() {
   let roomname;
@@ -261,6 +263,18 @@ function ChatRoom() {
       document.getElementById("mic").classList.toggle("active");
     }
 
+    const handleCopy = (e) => {
+      navigator.clipboard.writeText(roomId);
+      showAlert("Room Id copied to clipboard !!!","info");
+    }
+
+    const [alert, setAlert] = useState(null);
+    const showAlert = (message, type) => {
+      setAlert({ message, type });
+      setTimeout(() => {
+        setAlert(null);
+      }, 1500);
+    };
 
   return (
     <div className='chat-screen'>
@@ -274,10 +288,9 @@ function ChatRoom() {
 
         <div className="video-footer">
 
-
               <div className='details'>
                     <h2>Room Name : {roomname}</h2>
-                    <h2>Room Id : {roomId}</h2>
+                    <h2>Room Id : {roomId} <span onClick={handleCopy} className='copy-icon'><FaCopy /></span></h2>
               </div>
 
               <div className="btn-grp">
@@ -312,6 +325,15 @@ function ChatRoom() {
           {msgClick && <Message/> }
           </div>
         </div>
+        {alert && (
+        <Alert
+          message={alert.message}
+          type={alert.type}
+          onClose={() => {
+            setAlert(null);
+          }}
+        />
+      )}
     </div>
   )
 }
