@@ -4,9 +4,10 @@ import chatContext from './context'
 function ChatContext(props) {
   const [username,setUsername] = useState("");
   const [roomId,setRoomId] = useState("");
+  const [roomname,setroomname] = useState("")
   const [recivedMessage,setRecivedMessage]=useState([{username:'',message:'',type:''}]);
   return (
-    <chatContext.Provider value={{username,setUsername,roomId,setRoomId,recivedMessage,setRecivedMessage}}>
+    <chatContext.Provider value={{username,setUsername,roomId,setRoomId,recivedMessage,setRecivedMessage,roomname,setroomname}}>
         {props.children}
     </chatContext.Provider>
   )

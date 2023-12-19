@@ -29,7 +29,7 @@ io.on("connection", (socket) => {
                 socketId:socket.id
             })
             socket.join(data.roomid)
-            socket.to(data.roomid).emit('newuser',{username:data.name,stream:'some stream'})
+            socket.to(data.roomid).emit('newuser',{username:data.name,roomId:data.roomid,roomname:data.roomname,socketId:socket.id})
             console.log('user joined room',data.name)
         }else{
             console.log("Room doesn't exist");
@@ -47,12 +47,24 @@ io.on("connection", (socket) => {
         io.to(data.socketId).emit("otheruserslist", filterUsers);
     })
 
-    socket.on('sdpExchange',(data)=>{
-        socket.to(data.connectionId).emit('sdpExchange',{
-            data: data.data,
-            from_connid: socket.id
-
-        })
+    socket.on('all user',(data)=>{
+        console.log('all user emitted')
+        const filterUsers = users.filter((user) => user.roomId === data.roomId && user.socketId!==data.socketId);
+        io.to(data.socketId).emit("user list", filterUsers)
     })
+
+
+
+    socket.on("sending signal", data => {
+        console.log('Emit1')
+        io.to(data.SignalUser).emit('user joined', { signal: data.signal, socketId: data.socketId });
+    });
+
+    socket.on("returning signal", data => {
+        console.log('Emit2')
+        io.to(data.socketId).emit('receiving returned signal', { signal: data.signal, id: socket.id });
+    });
     
+
+
 });
