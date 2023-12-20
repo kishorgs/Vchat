@@ -18,12 +18,6 @@
     height:calc(100vh - 70px);
 }
 
-.user-screen{
-    width:70%;
-    height:calc(100vh - 70px);
-    border:1px solid red;
-}
-
 .chat-box{
     width:30%;
     height:calc(100vh - 70px);
@@ -127,14 +121,20 @@ button.active{
 .video-player{
     display: flex;
     width: 50%;
-    height: 300px;
-    background-color: black;
+    height: 250px;
+    position: relative;
     flex-wrap: wrap;
 }
 
 .username{
     color: white;
     font-size: 20px;
+}
+
+.user-screen{
+    width:70%;
+    height:calc(100vh - 70px);
+    border:1px solid red;
 }
 
 .video-screen{
