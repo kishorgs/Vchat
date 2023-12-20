@@ -1,6 +1,7 @@
 import React from 'react'
 
 const VideoPlayer = ({username,user_id}) => {
+
   return (
     <div className="video-player">
         <span className='username'>{username}</span>
