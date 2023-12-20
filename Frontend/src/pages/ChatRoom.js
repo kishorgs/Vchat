@@ -23,33 +23,14 @@ function ChatRoom() {
   const Socket = useSocket();
 
   const context = useContext(chatContext);
-  const { setRecivedMessage, recivedMessage, roomId } = context;
+  const { setRecivedMessage, recivedMessage, roomId,streamRef } = context;
 
   const [user, setUsers] = useState([{ username: '',roomId:'',roomname:'',socketId:''}]);
   const [peers, setPeers] = useState([]);
   const peersRef = useRef([]);
-  const streamRef = useRef(null);
   const [roomname,setroomname] = useState("")
 
-const clicker=()=>{
 
-  console.log(user,"iUse is good")
-
-
-  console.log('clicked ajaj')
-  peersRef.current.forEach((peer) => {
-    console.log('Connection state for', peer.peerID, ':',  peer.connected);
-    console.log('Peer:', peer);
-    peer.peer.on('stream', (stream) => {
-      console.log('Received stream for', peer.peerID, stream);
-      const videoElement = document.getElementById(`${peer.peerID}`);
-      if (videoElement) {
-        console.log('Setting stream for', peer.peerID);
-        videoElement.srcObject = stream;
-      }
-    });
-  });
-}
 
   useEffect(() => {
     const handleReceiveMessage = (data) => {
@@ -101,21 +82,9 @@ const clicker=()=>{
   }, [Socket, roomId]);
 
 
-  const getMedia = async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true,
-    });
-    streamRef.current = stream;
-    document.getElementById('localstream').srcObject = streamRef.current;
-    return stream;
-  };
-  getMedia();
 
 
   const createPeer = useCallback((SignalUser, socketId, stream) => {
-    // const streams = await getMedia();
-    console.log(stream)
     console.log('CreatePeer Function Called')
     console.log("Creating peer for", SignalUser, socketId);
     
@@ -146,15 +115,14 @@ const clicker=()=>{
       trickle: false,
       stream,
     });
-    var x=0
+
     peer.on("signal", (signal) => {
       
       console.log("Returning signal to", socketId);
-      if(x===0){
+      
 
         Socket.emit("returning signal", { signal, socketId });
-        x=1;
-      }
+       
     });
   
     peer.signal(incomingSignal);
@@ -165,62 +133,14 @@ const clicker=()=>{
     return peer;
   }, [Socket]);
 
-  // function createPeer(SignalUser, socketId, stream) {
-  //   console.log("Creating peer for", SignalUser, socketId);
-    
-  //   const peer = new Peer({
-  //     initiator: true,
-  //     trickle: false,
-  //     stream,
-  //   });
-  
-  //   peer.on("signal", (signal) => {
-  //     console.log("Sending signal to", SignalUser, socketId);
-  //     Socket.emit("sending signal", { SignalUser, socketId, signal });
-  //   });
-  
-  //   peer.on("connect", () => console.log("Peer connected"));
-  //   peer.on("error", (err) => console.error("Peer connection error:", err));
-  
-  //   return peer;
-  // }
+ 
 
-  // function addPeer(incomingSignal, socketId, stream) {
-  //   console.log("Adding peer for", socketId);
-    
-  //   const peer = new Peer({
-  //     initiator: false,
-  //     trickle: false,
-  //     stream,
-  //   });
-  
-  //   peer.on("signal", (signal) => {
-  //     console.log("Returning signal to", socketId);
-  //     Socket.emit("returning signal", { signal, socketId });
-  //   });
-  
-  //   peer.signal(incomingSignal);
-  
-  //   peer.on("connect", () => console.log("Peer connected"));
-  //   peer.on("error", (err) => console.error("Peer connection error:", err));
-  
-  //   return peer;
-  // }
 
+  useEffect(()=>{
+    document.getElementById('localstream').srcObject = streamRef.current;
+  })
 
   useEffect(() => {
-    console.log('Component mounted');
-  
-    // const getMedia = async () => {
-    //   const stream = await navigator.mediaDevices.getUserMedia({
-    //     video: true,
-    //     audio: true,
-    //   });
-    //   streamRef.current = stream;
-    //   document.getElementById('localstream').srcObject = streamRef.current;
-    // };
-    // getMedia();
-  
     const handleUserList = (data) => {
       console.log('User list received', data);
       const peers = [];
@@ -228,7 +148,7 @@ const clicker=()=>{
         const existingPeer = peersRef.current.find((p) => p.peerID === user.socketId);
   
         if (!existingPeer) {
-          setTimeout(()=>{
+         
 
             const peer = createPeer(user.socketId, Socket.id, streamRef.current);
             
@@ -237,7 +157,7 @@ const clicker=()=>{
               peer,
             });
             peers.push(peer);
-          },10000)
+          
         } else {
           console.log('Peer already exists for', user.socketId);
           peers.push(existingPeer.peer);
@@ -269,29 +189,14 @@ const clicker=()=>{
     const handleReturningSignal = (payload) => {
       console.log('Returning signal', payload);
       const item = peersRef.current.find((p) => p.peerID === payload.id);
-      console.log('Signal received for', payload.id);
-      console.log(item);
+      console.log('Signal received for', payload.id);   
       item.peer.signal(payload.signal);
     };
   
     Socket.on('receiving returned signal', handleReturningSignal);
 
-    peersRef.current.forEach((peer) => {
-      console.log('Peer:', peer);
-      peer.peer.on('stream', (stream) => {
-        console.log('Received stream for', peer.peerID, stream);
-        const videoElement = document.getElementById(`${peer.peerID}`);
-        if (videoElement) {
-          console.log('Setting stream for', peer.peerID);
-          videoElement.srcObject = stream;
-        }
-      });
-
-  });
   
-    // Cleanup function
     return () => {
-      console.log('Component will unmount');
       Socket.off('user list', handleUserList);
       Socket.off('user joined', handleUserJoined);
       Socket.off('receiving returned signal', handleReturningSignal);
@@ -300,12 +205,8 @@ const clicker=()=>{
   
 
 
-
   useEffect(() => {
-    console.log('implemented')
-      setTimeout(()=>{
-
-        console.log('Yaa')
+    
         peersRef.current.forEach((peer) => {
           console.log('Peer:', peer);
           peer.peer.on('stream', (stream) => {
@@ -318,7 +219,7 @@ const clicker=()=>{
           });
   
       });
-      },10000)
+      
   
 });  
  
@@ -405,7 +306,6 @@ const clicker=()=>{
         </div>
         <div id='chat-box' className='chat-box'>
           <div className="chat-body">
-          <button onClick={clicker}>OYee ajja</button>
             {userClick && <Users/> } 
             { msgClick && recivedMessage.map((data,index)=>{
                 return <MessageBox key={index} username={data.username} message={data.message} type={data.type}/>
