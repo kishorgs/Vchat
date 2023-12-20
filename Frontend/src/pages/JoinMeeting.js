@@ -22,6 +22,7 @@ function JoinMeeting({setProgress}) {
   const navigate = useNavigate();
   const socket = useSocket();
   const context = useContext(chatContext);
+  const {setUsername,setRoomId,streamRef} = context;
 
   const [alert, setAlert] = useState(null);
   const showAlert = (message, type) => {
@@ -55,22 +56,33 @@ function JoinMeeting({setProgress}) {
 
       socket.emit("room:join",{name,roomid});
 
-      const {setUsername} = context;
+     
       setUsername(name);
-
-      const {setRoomId} = context;
       setRoomId(roomid);
 
       formValues.name = "";
       formValues.roomId = "";
 
-
-
+      
+      
       navigate(`/chat-room/${roomid}`);
+      
       
       setProgress(100)
     }
   };
+
+  useEffect(()=>{
+    const getMedia =  async() => {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      streamRef.current = stream;
+    };
+    getMedia();
+  },[streamRef])
+
 
   const validate = (values) => {
     const errors = {};
