@@ -21,7 +21,7 @@ function CreateMeeting({setProgress}) {
   const [formErrors, setFormErrors] = useState({});
   const navigate = useNavigate();
   const context = useContext(chatContext);
-
+  const {setUsername,setRoomId,streamRef} = context;
   const [alert, setAlert] = useState(null);
   const showAlert = (message, type) => {
     setAlert({ message, type });
@@ -34,6 +34,9 @@ function CreateMeeting({setProgress}) {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
+
+
+
 
   const handleSubmit = async(e) => {
     e.preventDefault();
@@ -59,17 +62,30 @@ function CreateMeeting({setProgress}) {
 
       
       console.log(name,Passcode)
-      const {setUsername} = context;
+      
       setUsername(name);
-
-      const {setRoomId} = context;
       setRoomId(Passcode);
 
+      
+  
+      
       navigate(`/chat-room/${Passcode}`);
+      
       
       setProgress(100)
     }
   };
+
+  useEffect(()=>{
+    const getMedia =  async() => {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      streamRef.current = stream;
+    };
+    getMedia();
+  },[streamRef])
 
   const validate = async(values) => {
     const errors = {};
