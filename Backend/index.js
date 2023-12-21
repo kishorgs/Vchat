@@ -29,6 +29,7 @@ io.on("connection", (socket) => {
                 socketId:socket.id
             })
             socket.join(data.roomid)
+            io.to(socket.id).emit('room-name',r)
             socket.to(data.roomid).emit('newuser',{username:data.name,roomId:data.roomid,roomname:data.roomname,socketId:socket.id})
             console.log('user joined room',data.name)
         }else{
@@ -64,6 +65,11 @@ io.on("connection", (socket) => {
         console.log('Emit2')
         io.to(data.socketId).emit('receiving returned signal', { signal: data.signal, id: socket.id });
     });
+
+    socket.on('pause-video',(data)=>{
+        console.log(data)
+        socket.to(data.roomId).emit("pauseVideo",{socketId:socket.id})
+    })
     
 
 

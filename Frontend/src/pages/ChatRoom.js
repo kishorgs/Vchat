@@ -25,12 +25,12 @@ function ChatRoom() {
   const [video, setVideo] = useState(true);
 
   const context = useContext(chatContext);
-  const { setRecivedMessage, recivedMessage, roomId,streamRef } = context;
+  const { setRecivedMessage, recivedMessage, roomId,streamRef,roomname,setroomname} = context;
 
   const [user, setUsers] = useState([{ username: '',roomId:'',roomname:'',socketId:''}]);
   const [peers, setPeers] = useState([]);
   const peersRef = useRef([]);
-  const [roomname,setroomname] = useState("")
+
 
 
 
@@ -246,12 +246,15 @@ function ChatRoom() {
     setVideoClick(!videoClick);
     document.getElementById("cam").classList.toggle("active");
     setVideo(!video);
+    document.getElementById('localstream').srcObject.getVideoTracks()[0].enabled = false
   };
 
   const audioHandleClick = (e) => {
     setAudioClick(!audioClick);
     document.getElementById("mic").classList.toggle("active");
     setMuted(!muted);
+    document.getElementById('localstream').srcObject.getAudioTracks()[0].enabled = false
+    console.log(document.getElementById('localstream').srcObject.getAudioTracks()[0])
   };
 
   const handleCopy = (e) => {

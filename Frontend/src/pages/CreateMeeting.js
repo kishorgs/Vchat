@@ -21,7 +21,7 @@ function CreateMeeting({setProgress}) {
   const [formErrors, setFormErrors] = useState({});
   const navigate = useNavigate();
   const context = useContext(chatContext);
-  const {setUsername,setRoomId,streamRef} = context;
+  const {setUsername,setRoomId,streamRef,setroomname} = context;
   const [alert, setAlert] = useState(null);
   const showAlert = (message, type) => {
     setAlert({ message, type });
@@ -58,6 +58,7 @@ function CreateMeeting({setProgress}) {
       let roomname = formValues.roomName;
       formValues.name = "";
       formValues.roomName = "";
+      setroomname(roomname)
       socket.emit("room:create", { name , roomname , Passcode})
 
       
